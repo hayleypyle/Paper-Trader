@@ -9,9 +9,9 @@
 
 </head>
   <body>
-    <h5>Stone stock data</h5>
+    <h5>Apple stock data</h5>
 
-  {{price}}
+  {{data}}
 
   <div>
     <canvas id="myChart"></canvas>
@@ -25,10 +25,10 @@
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [{{date}}],
+        labels: ['date'],
         datasets: [{
           label: 'Closing Price',
-          data: [],
+          data: ['price'],
           borderWidth: 1
         }]
       },
