@@ -1,25 +1,46 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from json import dumps
-import yfinance as yahooFinance 
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns; sns.set()
+import yfinance as yahooFinance
+from plotly.offline import plot
+from plotly.graph_objs import Scatter
 
-def home(request):
+
+
+
+def index(request):
     return render(request, 'index.html')
 
 def aapl(request):
-    aapl_ticker = yahooFinance.Ticker("AAPL")
-    data = aapl_ticker.history(interval="1d")
-    close = data['Close']
-    date= close.index
-    price = close[0]
-    return render(request, 'aapl.html', {'date': date, 'price': close, 'data':data})
+    aapl_close = yahooFinance.download("AAPL", period="1y", actions=True).Close
+    date = aapl_close.index
+    x_data = date
+    y_data = aapl_close
+    plot_div = plot([Scatter(x=x_data, y=y_data,
+                        mode='lines', name='test',
+                        opacity=0.8, marker_color='green')],
+                output_type='div')
 
+    return render(request, 'aapl.html', {'plot_div': plot_div})
 
-def low(request):
-    return render(request,'low.html' )
+def msft(request):
+    msft_close = yahooFinance.download("MSFT", period="1y", actions=True).Close
+    date = msft_close.index
+    x_data = date
+    y_data = msft_close
+    plot_div = plot([Scatter(x=x_data, y=y_data,
+                        mode='lines', name='test',
+                        opacity=0.8, marker_color='green')],
+                output_type='div')
 
-def mcd(request):
-    return render(request,'mcd.html')
+    return render(request,'msft.html', {'plot_div': plot_div} )
+
+def goog(request):
+    goog_close = yahooFinance.download("MSFT", period="1y", actions=True).Close
+    date = goog_close.index
+    x_data = date
+    y_data = goog_close
+    plot_div = plot([Scatter(x=x_data, y=y_data,
+                        mode='lines', name='test',
+                        opacity=0.8, marker_color='green')],
+                output_type='div')
+    return render(request,'goog.html',  {'plot_div': plot_div})

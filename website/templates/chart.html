@@ -1,31 +1,38 @@
-<!DOCTYPE html> 
-<body> 
-    <div style="width: 40%; 
-    border: 1px solid black; 
-    background-color: lightcyan; 
-    font-family: Helvetica, sans-serif;"> 
-        <div style="margin: 5%;"> 
-            <h1> 
-                <u>Dictionary Data</u> 
-            </h1> 
-            <h2> 
-                <u>All Data</u> 
-            </h2> 
-            <h4 id='alldata'></h4><br> 
-            <h2> 
-                <u>Neat Data</u> 
-            </h2> 
-            <h4 id='neatdata'></h4> 
-        </div> 
-    </div> 
-</body> 
-</html> 
-<script> 
-    var data = JSON.parse("{{data|escapejs}}"); 
-    var dataNode = document.getElementById('alldata'); 
-    dataNode.innerHTML+="{{data|escapejs}}"; 
-    dataNode = document.getElementById('neatdata'); 
-    for(var x in data){ 
-        dataNode.innerHTML+=x+' : '+data[x]+'<br><br>'; 
-    } 
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.stock.min.js"></script>
+<script type="text/javascript">
+window.onload = function () {
+    var dataPoints = {{ chart_data|safe }};
+
+    var stockChart = new CanvasJS.StockChart("chartContainer",{
+        title: {
+            text: "AAPL Stock Price"
+        },
+        charts: [{
+            axisY:{
+                prefix:"$",
+                title: "Price"
+            },     
+            data: [{        
+                type: "spline",
+                dataPoints: dataPoints
+            }]
+        }],
+        navigator: {
+            slider: {
+                minimum: new Date(dataPoints[0].x),
+                maximum: new Date(dataPoints[dataPoints.length - 1].x)
+            }
+        }
+    });
+    stockChart.render();
+};
 </script>
+</head>
+<body>
+<div id="chartContainer" style="height: 400px; width: 100%;"></div>
+</body>
+</html>
