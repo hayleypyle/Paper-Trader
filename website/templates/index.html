@@ -12,7 +12,57 @@
 <body>
     <h1>Paper Trader Home Page</h1>
     <h2>Welcome to Paper Trader!</h2>
+    <h3>Apple</h3>
+<div class="graph-container">
+   
+    {% autoescape off %}
+    {{aapl_plot_div}}
+    {% endautoescape %}
+</div>
+<h3>Microsoft</h3>
+<div>
+   
+    {% autoescape off %}
+    {{msft_plot_div}}
+    {% endautoescape %}
+</div>
 
+    <h3>Google</h3>
+    <div>
+    {% autoescape off %}
+    {{goog_plot_div}}
+    {% endautoescape %}
+    </div>
+
+<div class="buy-container">
+    <h4>Portfolio</h4>
+    <table>
+        <tr>
+            <th>Stock</th>
+            <th>Quantity</th> 
+            <th>Value</th>
+            <th>Buy/Sell</th>
+        </tr>
+        <tr>
+            <td>AAPL</td>
+            <td>10</td> 
+            <td>$1</td>
+            <td>yes</td>
+        </tr>
+        <tr>
+            <td>MSFT</td>
+            <td>10</td> 
+            <td>$1</td>
+            <td>yes</td>
+        </tr>
+        <tr>
+            <td>GOOG</td>
+            <td>10</td> 
+            <td>$1</td>
+            <td>yes</td>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>
