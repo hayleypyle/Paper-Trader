@@ -3,3 +3,13 @@ body{
     flex-direction: column;
     align-items: center;
 }
+
+.apple{
+    height: 300px;
+    width:300px;
+    background-color:blue;
+}
+
+h1{
+    color:blue;
+}

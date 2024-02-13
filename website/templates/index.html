@@ -12,23 +12,24 @@
 <body>
     <h1>Paper Trader Home Page</h1>
     <h2>Welcome to Paper Trader!</h2>
-    <h3>Apple</h3>
-<div class="graph-container">
-   
-    {% autoescape off %}
-    {{aapl_plot_div}}
-    {% endautoescape %}
-</div>
-<h3>Microsoft</h3>
-<div>
-   
-    {% autoescape off %}
-    {{msft_plot_div}}
-    {% endautoescape %}
-</div>
 
-    <h3>Google</h3>
-    <div>
+    <form method="GET" id="tickerform">
+        {{form}}
+    </form>
+
+    <div id="apple">
+    {% autoescape off %}
+    {{aapl_plot_div|safe}}
+    {% endautoescape %}
+    </div>
+
+    <div class="microsoft-container">
+        {% autoescape off %}
+        {{msft_plot_div}}
+        {% endautoescape %}
+    </div>
+
+    <div class="google-container">
     {% autoescape off %}
     {{goog_plot_div}}
     {% endautoescape %}
@@ -44,25 +45,35 @@
             <th>Buy/Sell</th>
         </tr>
         <tr>
-            <td>AAPL</td>
-            <td>10</td> 
-            <td>$1</td>
-            <td>yes</td>
+            <td>Apple</td>
+            <td><input type="text" class="aaplquantity"></input></td> 
+            <td>${{aapl_last_quote}}</td>
+            <td><input type="radio" class="aaplradio"></input></td>
         </tr>
         <tr>
-            <td>MSFT</td>
-            <td>10</td> 
-            <td>$1</td>
-            <td>yes</td>
+            <td>Microsoft</td>
+            <td><input type="text" class="msftquantity"></input></td> 
+            <td>${{msft_last_quote}}</td>
+            <td><input type="radio" class="msftradio"></input></td>
         </tr>
         <tr>
-            <td>GOOG</td>
-            <td>10</td> 
-            <td>$1</td>
-            <td>yes</td>
+            <td>Google</td>
+            <td><input type="text" class="msftquantity"></input></td> 
+            <td>${{goog_last_quote}}</td>
+            <td><input type="radio" class="googradio"></input></td>
         </tr>
     </table>
-</div>
 
+
+    <script>
+    
+        var selectElement = document.getElementById('ticker_field');
+    
+
+        selectElement.addEventListener('change', function() {
+
+            document.getElementById('tickerform').submit();
+        });
+    </script>
 </body>
 </html>
