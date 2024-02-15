@@ -1,17 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 import yfinance as yahooFinance
-from plotly.offline import plot
-from plotly.graph_objs import Scatter
 import plotly.express as px
 from .forms import TickerForm
+from .models import Shares
 
 
 
 
 def index(request):
     form = TickerForm(request.GET or None)
-    
+
 
 
 
@@ -24,7 +22,7 @@ def index(request):
         x=aapl_x_data,
         y=aapl_y_data,
         title="Apple",
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price")
+    ).update_layout(xaxis_title="Date", yaxis_title="Close Price", width=500, height=350)
     appl_chart = fig_appl.to_html()
 
     msft_close = yahooFinance.download("MSFT", period="1y", actions=True).Close
@@ -36,7 +34,7 @@ def index(request):
         x=msft_x_data,
         y=msft_y_data,
         title="Microsoft"
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price")
+    ).update_layout(xaxis_title="Date", yaxis_title="Close Price", width=500,height=350)
     
     msft_chart = fig_msft.to_html()
 
@@ -49,8 +47,25 @@ def index(request):
         x=goog_x_data,
         y=goog_y_data,
         title="Google"
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price")
+    ).update_layout(xaxis_title="Date", yaxis_title="Close Price",width=500, height=350)
     goog_chart = fig_goog.to_html()
+
+
+    shares_list = []
+    apple_share = Shares(share_name = "AAPL", share_quantity=0,  shares_owned=0, 
+                total_price=0, share_price= aapl_last_quote )
+    microsoft_share = Shares(share_name = "MSFT", share_quantity=0,  shares_owned=0, 
+                total_price=0, share_price= aapl_last_quote )
+    google_share = Shares(share_name = "GOOG", share_quantity=0,  shares_owned=0, 
+                total_price=0, share_price= aapl_last_quote )
+    
+    shares_list.append(apple_share)
+    shares_list.append(microsoft_share)
+    shares_list.append(google_share)
+
+    
+    
+
 
 
     if request.method == "GET" and form.is_valid():  # Check if form is submitted and valid
@@ -60,17 +75,17 @@ def index(request):
             return render(request, 'index.html', {'aapl_plot_div': appl_chart, "aapl_last_quote":aapl_last_quote, 
                                         "msft_last_quote":msft_last_quote,
                                         "goog_last_quote":goog_last_quote,
-                                        "form":form})
+                                        "form":form, "shares":shares_list})
         elif ticker == "3":
             return render(request, 'index.html', {'msft_plot_div': msft_chart, "aapl_last_quote":aapl_last_quote, 
                                         "msft_last_quote":msft_last_quote,
                                         "goog_last_quote":goog_last_quote,
-                                        "form":form})
+                                        "form":form,"shares":shares_list})
         elif ticker == "4":
             return render(request, 'index.html', {'goog_plot_div': goog_chart,"aapl_last_quote":aapl_last_quote, 
                                         "msft_last_quote":msft_last_quote,
                                         "goog_last_quote":goog_last_quote,
-                                        "form":form})
+                                        "form":form,"shares":shares_list})
 
         
         
@@ -79,6 +94,6 @@ def index(request):
                                         "aapl_last_quote":aapl_last_quote, 
                                         "msft_last_quote":msft_last_quote,
                                         "goog_last_quote":goog_last_quote,
-                                        "form":form})
+                                        "form":form,"shares":shares_list})
 
 

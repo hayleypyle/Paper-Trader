@@ -10,26 +10,30 @@
 
 </head>
 <body>
-    <h1>Paper Trader Home Page</h1>
-    <h2>Welcome to Paper Trader!</h2>
+    <h1>Paper Trader</h1>
+    <div class="directions">
+    <p>Use the drop down menu to view different charts containing stock closing data.
+    Then input the quantity of shares you wish to purchase or sell in the portfolio.
+    Lastly, use the "complete transaction" button to confirm your purchase or sale. </p>
+    </div>
 
     <form method="GET" id="tickerform">
         {{form}}
     </form>
-
+    <div class="main-container">
     <div id="apple">
     {% autoescape off %}
     {{aapl_plot_div|safe}}
     {% endautoescape %}
     </div>
 
-    <div class="microsoft-container">
+    <div class="microsoft-container" id="microsoft">
         {% autoescape off %}
         {{msft_plot_div}}
         {% endautoescape %}
     </div>
 
-    <div class="google-container">
+    <div class="google-container" id="google">
     {% autoescape off %}
     {{goog_plot_div}}
     {% endautoescape %}
@@ -40,29 +44,51 @@
     <table>
         <tr>
             <th>Stock</th>
-            <th>Quantity</th> 
-            <th>Value</th>
-            <th>Buy/Sell</th>
+            <th>Shares Owned</th> 
+            <th>Share Price</th>
+            <th>Buy Quantity</th>
+            <th>Sell Quantity</th>
         </tr>
+        {% for share in shares %}
         <tr>
+            <td>{{share.share_name}}</td>
+            <td>{{share.owned_share}}</td> 
+            <td>{{share.share_price}}</td>
+            <td><input type="text" class="aaplbuy"></input></td>
+            <td><input type="text" class="aaplsell"></input></td>
+        </tr>
+
+        {% endfor %}
+        {% comment %} <tr>
             <td>Apple</td>
-            <td><input type="text" class="aaplquantity"></input></td> 
+            <td>0</td> 
             <td>${{aapl_last_quote}}</td>
-            <td><input type="radio" class="aaplradio"></input></td>
+            <td><input type="text" class="aaplbuy"></input></td>
+            <td><input type="text" class="aaplsell"></input></td>
         </tr>
         <tr>
             <td>Microsoft</td>
-            <td><input type="text" class="msftquantity"></input></td> 
+            <td>0</td> 
             <td>${{msft_last_quote}}</td>
-            <td><input type="radio" class="msftradio"></input></td>
+            <td><input type="text" class="msftbuy"></input></td>
+            <td><input type="text" class="msftsell"></input></td>
         </tr>
         <tr>
             <td>Google</td>
-            <td><input type="text" class="msftquantity"></input></td> 
+            <td>0</td> 
             <td>${{goog_last_quote}}</td>
-            <td><input type="radio" class="googradio"></input></td>
-        </tr>
+            <td><input type="text" class="googbuy"></input></td>
+            <td><input type="text" class="googsell"></input></td>
+        </tr> {% endcomment %}
+    
     </table>
+    <div class="money">
+    <h4>Buy/Sell Total:</h4>
+    <h4>Balance: $10000</h4>
+    <button>Complete Transaction</button>
+    </div>
+
+</div>
 
 
     <script>
