@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import yfinance as yahooFinance
 import plotly.express as px
-from .forms import TickerForm
+from .forms import TickerForm, BuyForm
 from .models import Shares
 
 
@@ -20,9 +20,10 @@ def index(request):
     aapl_y_data = aapl_close
     fig_appl = px.line(
         x=aapl_x_data,
-        y=aapl_y_data,
-        title="Apple",
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price", width=500, height=350)
+        y=aapl_y_data,   
+    ).update_layout(title_text="Apple", title_x=0.5, xaxis_title="Date", yaxis_title="Close Price", width=500, height=350, plot_bgcolor='#F4F6F1',
+        paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
+    ).update_traces(line_color ='#405751')
     appl_chart = fig_appl.to_html()
 
     msft_close = yahooFinance.download("MSFT", period="1y", actions=True).Close
@@ -33,8 +34,9 @@ def index(request):
     fig_msft = px.line(
         x=msft_x_data,
         y=msft_y_data,
-        title="Microsoft"
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price", width=500,height=350)
+    ).update_layout(title_text="Microsoft", title_x=0.5,xaxis_title="Date", yaxis_title="Close Price", width=500,height=350, plot_bgcolor='#F4F6F1',
+        paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
+    ).update_traces(line_color ='#405751')
     
     msft_chart = fig_msft.to_html()
 
@@ -46,23 +48,27 @@ def index(request):
     fig_goog = px.line(
         x=goog_x_data,
         y=goog_y_data,
-        title="Google"
-    ).update_layout(xaxis_title="Date", yaxis_title="Close Price",width=500, height=350)
+        
+    ).update_layout(title_text="Google", title_x=0.5, xaxis_title="Date", yaxis_title="Close Price",width=500, height=350, plot_bgcolor='#F4F6F1',
+                    paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
+    ).update_traces(line_color ='#405751')
+    
     goog_chart = fig_goog.to_html()
 
 
     shares_list = []
     apple_share = Shares(share_name = "AAPL", share_quantity=0,  shares_owned=0, 
-                total_price=0, share_price= aapl_last_quote )
+                total_price=0 , share_price= aapl_last_quote )
     microsoft_share = Shares(share_name = "MSFT", share_quantity=0,  shares_owned=0, 
-                total_price=0, share_price= aapl_last_quote )
+                total_price=0, share_price= msft_last_quote )
     google_share = Shares(share_name = "GOOG", share_quantity=0,  shares_owned=0, 
-                total_price=0, share_price= aapl_last_quote )
+                total_price=0, share_price= goog_last_quote )
     
     shares_list.append(apple_share)
     shares_list.append(microsoft_share)
     shares_list.append(google_share)
 
+    
     
     
 

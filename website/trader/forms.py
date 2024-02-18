@@ -10,3 +10,6 @@ TICKER_CHOICES=(
 class TickerForm(forms.Form):
     company = forms.ChoiceField(choices=TICKER_CHOICES,
                                     widget=forms.Select(attrs={'onchange': 'tickerform.submit();'}))
+    
+class BuyForm(forms.Form):
+    buy_quantity = forms.IntegerField()
