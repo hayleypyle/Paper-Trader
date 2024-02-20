@@ -8,17 +8,16 @@
     <title>Paper Trader</title>
     <link rel="stylesheet" href="{% static  'css/styles.css'%}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="{% static 'index.js' %}"></script>
 
 
 </head>
 <body>
-    <h1>Paper Trader</h1>
-    <div class="directions">
+    <div class="header">paper trader</div>
+    {% comment %} <div class="directions">
     <p>Use the drop down menu to view different charts containing stock closing data.
     Then input the quantity of shares you wish to purchase or sell in the portfolio.
     Lastly, use the "complete transaction" button to confirm your purchase or sale. </p>
-    </div>
+    </div> {% endcomment %}
 
     <form method="GET" id="tickerform">
         {{form}}
@@ -43,59 +42,120 @@
     </div>
 
 <div class="buy-container">
-    <h4>Portfolio</h4>
+    <h2>portfolio</h2>
     <table>
         <tr>
-            <th>Stock</th>
-            <th>Shares Owned</th> 
-            <th>Share Price</th>
-            <th>Buy Quantity</th>
-            <th>Sell Quantity</th>
+            <th>stock</th>
+            <th>shares owned</th> 
+            <th>share price</th>
+            <th>buy quantity</th>
+            <th>sell quantity</th>
         </tr>
         {% for share in shares %}
         <tr>
             <td>{{share.share_name}}</td>
-            <td>{{share.shares_owned}}</td> 
-            <td>{{share.share_price}}</td>
-            <td><input type="text" id="buy" onchange="buyQuantity()"></input></td>
-            <td><input type="text" id="sell" onchange="sellQuantity()"></input></td>
+            <td id="shares-owned-{{share.share_name }}">
+                {{share.owned_share}}
+            </td>
+            <td id="shares-price-{{share.share_name }}">
+                {{share.share_price}}
+            </td>
+        
+            <td><input type="text" class="buy-quantity" data-stock="{{share.share_name }}">
+                </input>
+            </td>
+
+            <td>
+                <input type="text" class="sell-quantity" data-stock="{{share.share_name }}">
+                </input>
+            </td>
         </tr>
 
         {% endfor %}
     
     </table>
     <div class="money">
-    <h4 id="total_price">Buy/Sell Total:{{share.total_price}}</h4>
-    <h4 id="balance">Balance: $10000</h4>
-    <button class="purchase-button">Complete Transaction</button>
+    <h4>buy/sell total:
+        <span id="buy-sell-total">0</span>
+    </h4>
+
+    <h4>balance: $
+        <span class="balance">10000</span>
+    </h4>
+    <button id= "complete-transaction" class="purchase-button">complete transaction</button>
     </div>
 
 </div>
 
     <script>
+
+    
+
+        const buyQuantityInputs = document.querySelectorAll('.buy-quantity');
+        const sellQuantityInputs = document.querySelectorAll('.sell-quantity');
+        const balanceElement = document.querySelectorAll('.balance');
+        const sharesOwnedElements = document.querySelectorAll('[id^=shares-owned]');
         let selectElement = document.getElementById('ticker_field');
+        let counter = 1;
+        let balance=10000;
+        console.log(buyQuantityInputs);
+        console.log(sellQuantityInputs);
 
-        selectElement.addEventListener('change', function() {
+        if(selectElement){
+            selectElement.addEventListener('change', function() {
 
-            document.getElementById('tickerform').submit();
+                document.getElementById('tickerform').submit();
+            });
+        }
+        buyQuantityInputs.forEach(input => { 
+            if(balance > 9999){
+                input.addEventListener('change', function() {
+                    const stockName = this.dataset.stock;
+                    const sharesOwnedElement = document.querySelector(`#shares-owned-${stockName}`);
+                    const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
+                    const buyQuantity = parseInt(this.value)|| 0;
+                    const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
+                    const totalShares = buyQuantity + sharesOwned;
+                    const buySellTotalElement = document.getElementById('buy-sell-total');
+                    const buySellTotal = parseInt(buySellTotalElement.textContent)|| 0;
+                    const sharePrice = parseInt(sharePriceElement.textContent)|| 0;
+                    
+                    sharesOwnedElement.textContent = totalShares;
+
+                    buySellTotalElement.textContent = buySellTotal + buyQuantity;
+                    balanceElement.textContent = balance - (sharePrice * buyQuantity);
+                    counter++;
+                });
+
+            }
+
+        });
+        
+        sellQuantityInputs.forEach(input => {
+            input.addEventListener('change', function(){
+                const stockName = this.dataset.stock;
+                const sharesOwnedElement = document.querySelector(`#shares-owned-${stockName}`);
+                const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
+                const sellQuantity = parseInt(this.value) || 0;
+                const sharesOwned=parseInt(sharesOwnedElement.textContent)||0;
+                const totalShares =Math.max(sharesOwned-sellQuantity, 0);
+                const buySellTotalElement = document.getElementById('buy-sell-total');
+                const buySellTotal = parseInt(buySellTotalElement.textContent) || 0;
+                const sharePrice = parseInt(sharePriceElement.textContent) || 0;
+                const balance = parseInt(balanceElement.textContent) || 0;
+
+                sharesOwnedElement.textContent = totalShares;
+
+                buySellTotalElement.textContent = buySellTotal - sellQuantity;
+                
+                balanceElement.textContent = balance + (sharePrice * buyQuantity);
+                
+
+
+            });
         });
 
-        function buyQuantity(){
-            buy_quantity= document.getElementById("buy").value
-            buy_count = 0;
-            for(let i=0; i < buy_quantity.length; i++){
-                if (parseInt(buy_quantity[i].value))
-                    buy_count += parseInt(buy_quantity[i].value);
-            console.log(buy_count);
-        }
-    }
 
-        function sellQuantity(){
-            sell_total= document.getElementById("sell").value
-            console.log(sell_total)
-        
-        }
- 
 
         
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import yfinance as yahooFinance
 import plotly.express as px
-from .forms import TickerForm, BuyForm
+from .forms import TickerForm
 from .models import Shares
 
 
@@ -21,9 +21,9 @@ def index(request):
     fig_appl = px.line(
         x=aapl_x_data,
         y=aapl_y_data,   
-    ).update_layout(title_text="Apple", title_x=0.5, xaxis_title="Date", yaxis_title="Close Price", width=500, height=350, plot_bgcolor='#F4F6F1',
-        paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
-    ).update_traces(line_color ='#405751')
+    ).update_layout(title_text="Apple", title_x=0.5, xaxis_title="date", yaxis_title="close price", width=500, height=350, plot_bgcolor='#E6E3E6',
+        paper_bgcolor="#ECEDE8", font=dict(family="Noto Sans, sans-serif", color="#3C3E58"),
+    ).update_traces(line_color ='#56A25D')
     appl_chart = fig_appl.to_html()
 
     msft_close = yahooFinance.download("MSFT", period="1y", actions=True).Close
@@ -34,9 +34,9 @@ def index(request):
     fig_msft = px.line(
         x=msft_x_data,
         y=msft_y_data,
-    ).update_layout(title_text="Microsoft", title_x=0.5,xaxis_title="Date", yaxis_title="Close Price", width=500,height=350, plot_bgcolor='#F4F6F1',
-        paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
-    ).update_traces(line_color ='#405751')
+    ).update_layout(title_text="Microsoft", title_x=0.5,xaxis_title="date", yaxis_title="close price", width=500,height=350, plot_bgcolor='#E6E3E6',
+        paper_bgcolor="#ECEDE8", font=dict(family="Noto Sans, sans-serif", color="#3C3E58")
+    ).update_traces(line_color ='#56A25D')
     
     msft_chart = fig_msft.to_html()
 
@@ -49,9 +49,9 @@ def index(request):
         x=goog_x_data,
         y=goog_y_data,
         
-    ).update_layout(title_text="Google", title_x=0.5, xaxis_title="Date", yaxis_title="Close Price",width=500, height=350, plot_bgcolor='#F4F6F1',
-                    paper_bgcolor="#F4F6F1", font=dict(family="Noto Sans, sans-serif", color="#2C3835")
-    ).update_traces(line_color ='#405751')
+    ).update_layout(title_text="Google", title_x=0.5, xaxis_title="date", yaxis_title="close price",width=500, height=350, plot_bgcolor='#E6E3E6',
+                    paper_bgcolor="#ECEDE8", font=dict(family="Noto Sans, sans-serif", color="#3C3E58")
+    ).update_traces(line_color ='#56A25D')
     
     goog_chart = fig_goog.to_html()
 

@@ -6,6 +6,7 @@ class Shares(models.Model):
     shares_owned = models.IntegerField(default=0)
     total_price = models.IntegerField(default=0)
     share_price = models.IntegerField(default=0)
+    balance = models.IntegerField(default=10000)
     def __str__(self):
         return self.shares_text
 
