@@ -75,8 +75,14 @@
     
     </table>
     <div class="money">
-    <h4>buy/sell total:
-        <span id="buy-sell-total">0</span>
+    <h4>buy total:$
+        <span id="buy-total">0</span>
+    </h4>
+    <h4>sell total:$
+        <span id="sell-total">0</span>
+    </h4>
+    <h4>final transaction:$
+        <span id="transaction-total">0</span>
     </h4>
 
     <h4>balance: $
@@ -96,65 +102,76 @@
         const balanceElement = document.querySelectorAll('.balance');
         const sharesOwnedElements = document.querySelectorAll('[id^=shares-owned]');
         let selectElement = document.getElementById('ticker_field');
-        let counter = 1;
-        let balance=10000;
-        console.log(buyQuantityInputs);
-        console.log(sellQuantityInputs);
-
+        let balance = 10000;
+        let totalBuy=0;
+        let totalSell = 0;
+    
         if(selectElement){
             selectElement.addEventListener('change', function() {
 
                 document.getElementById('tickerform').submit();
             });
         }
+
         buyQuantityInputs.forEach(input => { 
-            if(balance > 9999){
+            if(balance <= 10000){
                 input.addEventListener('change', function() {
-                    const stockName = this.dataset.stock;
-                    const sharesOwnedElement = document.querySelector(`#shares-owned-${stockName}`);
-                    const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
-                    const buyQuantity = parseInt(this.value)|| 0;
-                    const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
-                    const totalShares = buyQuantity + sharesOwned;
-                    const buySellTotalElement = document.getElementById('buy-sell-total');
-                    const buySellTotal = parseInt(buySellTotalElement.textContent)|| 0;
-                    const sharePrice = parseInt(sharePriceElement.textContent)|| 0;
+
+                    totalBuy = 0;
+                    buyQuantityInputs.forEach(input=>{
+                        const stockName = input.dataset.stock;
+                        const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
+                        const buyQuantity = parseInt(input.value)|| 0;
+                        const sharePrice = parseFloat(sharePriceElement.textContent)|| 0;
+                        const cost = (sharePrice * buyQuantity);
+                        totalBuy -= cost
+                        
+                        
+                    });
+                    const buyTotalElement = document.getElementById('buy-total');
+                    buyTotalElement.textContent = totalBuy;
+                    updateTransactionTotal();
                     
-                    sharesOwnedElement.textContent = totalShares;
-
-                    buySellTotalElement.textContent = buySellTotal + buyQuantity;
-                    balanceElement.textContent = balance - (sharePrice * buyQuantity);
-                    counter++;
                 });
-
+        
             }
 
         });
         
         sellQuantityInputs.forEach(input => {
             input.addEventListener('change', function(){
-                const stockName = this.dataset.stock;
-                const sharesOwnedElement = document.querySelector(`#shares-owned-${stockName}`);
-                const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
-                const sellQuantity = parseInt(this.value) || 0;
-                const sharesOwned=parseInt(sharesOwnedElement.textContent)||0;
-                const totalShares =Math.max(sharesOwned-sellQuantity, 0);
-                const buySellTotalElement = document.getElementById('buy-sell-total');
-                const buySellTotal = parseInt(buySellTotalElement.textContent) || 0;
-                const sharePrice = parseInt(sharePriceElement.textContent) || 0;
-                const balance = parseInt(balanceElement.textContent) || 0;
+                totalSell = 0;
+                sellQuantityInputs.forEach(input=>{
+                    const stockName = input.dataset.stock;
+                    const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
+                    const sellQuantity = parseInt(input.value)|| 0;
+                    const sharePrice = parseFloat(sharePriceElement.textContent)|| 0;
+                    const cost = (sharePrice * sellQuantity);
+                    totalSell += cost
 
-                sharesOwnedElement.textContent = totalShares;
-
-                buySellTotalElement.textContent = buySellTotal - sellQuantity;
+                });
+                const sellTotalElement = document.getElementById('sell-total');
+                sellTotalElement.textContent = totalSell;
+                updateTransactionTotal();
                 
-                balanceElement.textContent = balance + (sharePrice * buyQuantity);
+            });
                 
 
 
             });
-        });
+        
 
+        function updateTransactionTotal(){
+            const transactionTotalElement = document.getElementById('transaction-total');
+            transactionTotalElement.textContent = totalBuy+totalSell;
+
+        }
+
+        document.getElementById('complete-transaction').addEventListener('click', function() {
+            const buySellTotal = totalBuy + totalSell;
+            balance -= buySellTotal;
+            balanceElement.textContent = balance;
+        })
 
 
         
