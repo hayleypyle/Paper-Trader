@@ -77,6 +77,7 @@
         {% endfor %}
     </table>
     <div class="money">
+        <div class="values">
     <h4>buy total:$
         <span id="buy-total">0</span>
     </h4>
@@ -86,13 +87,18 @@
     <h4>final transaction:$
         <span id="transaction-total">0</span>
     </h4>
+</div>
 
-    <h4>balance: $
+<div class="balance-container">
+    <h3>balance: $
         <span class="balance">10000</span>
-    </h4>
+    </h3>
     <button type="submit" id= "complete-transaction" class="purchase-button">complete transaction</button>
     <div id="warning"></div>
     </div>
+</div>
+   
+
 </form>
 
 </div>
@@ -147,6 +153,7 @@
                     const buyTotalElement = document.getElementById('buy-total');
                     buyTotalElement.textContent = totalBuy.toFixed(2)
                     updateTransactionTotal();
+                    totalBuy = "0";
                     
                 });
         
@@ -173,6 +180,7 @@
                 const sellTotalElement = document.getElementById('sell-total');
                 sellTotalElement.textContent = totalSell.toFixed(2)
                 updateTransactionTotal();
+                totalSell="0"
                 
             });
                 
@@ -187,8 +195,7 @@
                 const transactionTotal = parseFloat(totalBuy) + parseFloat(totalSell);
                 transactionTotalElement.textContent = transactionTotal.toFixed(2);
 
-                //Current error if you enter quantities after hitting complete 
-                //transaction the results for final transaction are incorrect occassionaly. 
+        
         
         }
 

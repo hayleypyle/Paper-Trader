@@ -39,7 +39,10 @@ body{
 }
 
 input[type="text"]{
-    width:80%;
+    width:50%;
+    text-align:center;
+    font-size:1rem;
+    color:#383632;
 }
 
 th, td{
@@ -74,19 +77,16 @@ th, td{
     
 }
 
+.money{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-/* table, th, td{
-    background-color:#ECEDE8;
-    
-    
-} */
-/* 
-th, td {
-    text-align:center;
-    border-bottom:1px solid #383632;
-    background-color: white;
-    color:#383632;
-} */
+.values{
+    display:flex;
+    flex-direction: column;
+}
 
 table{
     width: 700px;
@@ -119,9 +119,18 @@ h2{
     font-weight:100;
 }
 
+h3{
+    font-weight:100;
+}
+
 h4{
     font-weight:100;
     font-size:1rem;
+}
+
+.balance-container{
+    text-align: center;
+
 }
 
 .purchase-button{
