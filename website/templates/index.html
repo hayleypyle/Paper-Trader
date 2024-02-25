@@ -154,6 +154,7 @@
                     buyTotalElement.textContent = totalBuy.toFixed(2)
                     updateTransactionTotal();
                     totalBuy = "0";
+                    buyQuantity = "0";
                     
                 });
         
@@ -173,7 +174,6 @@
                     const totalShares = Math.max(sharesOwned - sellQuantity, 0); 
                     const sharePrice = parseFloat(sharePriceElement.textContent)|| 0;
                     const cost = (sharePrice * sellQuantity);
-                    //sharesOwnedElement.textContent = totalShares;
                     totalSell += cost
 
                 });
@@ -181,6 +181,7 @@
                 sellTotalElement.textContent = totalSell.toFixed(2)
                 updateTransactionTotal();
                 totalSell="0"
+                sellQuantity="0"
                 
             });
                 
@@ -204,10 +205,12 @@
 
             const transactionTotal = parseFloat(transactionTotalElement.textContent);
 
-            if (transactionTotal > balance) {
+            if (Math.abs(transactionTotal) > balance) {
                 alert('Transaction total exceeds balance. Transaction cannot be completed.');
                 return;
             }
+
+            let transactionCompleted = true;
 
             sharesOwnedElements.forEach(sharesOwnedElement =>{
                 const stockName = sharesOwnedElement.id.split('-')[2];
@@ -218,23 +221,39 @@
                 const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
                 const totalShares = sharesOwned + buyQuantity - sellQuantity;
 
+                if (sharesOwned < sellQuantity){
+                    alert('Not enough shares for transaction.');
+                    transactionCompleted = false;
+                    return;
+                }
+                
                 sharesOwnedElement.textContent = totalShares;
-
                 buyQuantityInput.value = '';
                 sellQuantityInput.value = '';
-            });
+                
+        });
 
-    
-            balance += transactionTotal;
-            balanceElement.textContent = balance.toFixed(2);
+                if (transactionCompleted){
+                    completeTransaction();
+                }
+                
+        });
         
-            buyTotalElement.textContent = '0';
-            sellTotalElement.textContent = '0';
-            transactionTotalElement.textContent = '0';
-            transationTotal = 0;
-            });
 
+        function completeTransaction(){
+            const transactionTotal = parseFloat(transactionTotalElement.textContent);
+                balance += transactionTotal;
+                balanceElement.textContent = balance.toFixed(2);
+        
+                buyTotalElement.textContent = '0';
+                sellTotalElement.textContent = '0';
+                transactionTotalElement.textContent = '0';
+                transationTotal = 0;
+            
+            };
 
+            //need to fix error where a number in both buy and sell for same stock, the final transaction number is wrong. 
+            //could make a warning to not use both columns?
 
         
 
