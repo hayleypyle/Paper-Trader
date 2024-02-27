@@ -94,7 +94,9 @@
         <span class="balance">10000</span>
     </h3>
     <button type="submit" id= "complete-transaction" class="purchase-button">complete transaction</button>
-    <div id="warning"></div>
+    <button id= "reset" class="reset-button">reset</button>
+
+    
     </div>
 </div>
    
@@ -217,6 +219,7 @@
                 const sellQuantity = parseInt(document.querySelector(`.sell-quantity[data-stock="${stockName}"]`).value)||0;
                 const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
                 const totalShares = sharesOwned + buyQuantity - sellQuantity;
+                //localStorage.setItem('sharesOwned', sharesOwned);
 
                 if (sharesOwned < sellQuantity){
                     alert('Not enough shares for transaction.');
@@ -241,15 +244,44 @@
                 const transactionTotal = totalBuy + totalSell;
                 balance += transactionTotal;
                 balanceElement.textContent = balance.toFixed(2);
-        
+                localStorage.setItem('balance', transactionTotal)
+                localStorage.getItem('balance')
+                        
                 buyTotalElement.textContent = '0';
                 sellTotalElement.textContent = '0';
                 transactionTotalElement.textContent = '0';
                 totalBuy=0;
                 totalSell=0;
                 transationTotal = 0;
+        
             
             };
+
+        function resetPortfolio(){
+            balance = 10000;
+            totalBuy=0;
+            totalSell = 0;
+            sharesOwned = 0;
+            totalShares = 0;
+
+            balanceElement.textContent = balance.toFixed(2);
+            buyTotalElement.textContent = '0';
+            sellTotalElement.textContent = '0';
+            transactionTotalElement.textContent = '0';
+
+            buyQuantityInputs.forEach(input => {
+                input.value = '';
+            });
+            sellQuantityInputs.forEach(input => {
+                input.value = '';
+            });
+            sharesOwnedElements.forEach(element => {
+                element.textContent = '0';
+            });
+        }
+    
+        document.getElementById("reset").addEventListener('click', resetPortfolio)
+        
 
 
         

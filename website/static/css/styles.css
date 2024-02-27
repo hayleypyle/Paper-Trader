@@ -81,6 +81,7 @@ th, td{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .values{
@@ -120,7 +121,7 @@ h2{
 }
 
 h3{
-    font-weight:100;
+    font-weight:400;
 }
 
 h4{
@@ -130,6 +131,11 @@ h4{
 
 .balance-container{
     text-align: center;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width:75%;
 
 }
 
@@ -139,17 +145,32 @@ h4{
     border-color:#898989;
     border-width:2px;
     border-style:solid;
-    margin-top:5%;
-    padding: 5%;
+    margin-right:5%;
+    padding: 2%;
     border-radius:25px;
     width:250px;
+    height:10%;
     font-size:0.9rem;
     
+}
+
+.reset-button{
+    background-color:#FEFCF3;
+    color:#383632;
+    border-color:#898989;
+    border-width:2px;
+    border-style:solid;
+    border-radius:25px;
+    font-size:0.9rem;
+    width:25%;
+    padding: 2%;
+    height:10%;
 
 
 }
 
-.purchase-button:hover{
+.purchase-button:hover,
+.reset-button:hover{
     background-color:#898989;
     color:#FEFCF3;
     border-color:#898989;
