@@ -145,7 +145,6 @@
 
                         const sharePrice = parseFloat(sharePriceElement.textContent)|| 0;
                         const cost = (sharePrice * buyQuantity);
-                        //sharesOwnedElement.textContent = totalShares;
                         totalBuy -= cost
                         
                         
@@ -153,8 +152,7 @@
                     const buyTotalElement = document.getElementById('buy-total');
                     buyTotalElement.textContent = totalBuy.toFixed(2)
                     updateTransactionTotal();
-                    totalBuy = "0";
-                    buyQuantity = "0";
+
                     
                 });
         
@@ -180,8 +178,7 @@
                 const sellTotalElement = document.getElementById('sell-total');
                 sellTotalElement.textContent = totalSell.toFixed(2)
                 updateTransactionTotal();
-                totalSell="0"
-                sellQuantity="0"
+        
                 
             });
                 
@@ -241,19 +238,19 @@
         
 
         function completeTransaction(){
-            const transactionTotal = parseFloat(transactionTotalElement.textContent);
+                const transactionTotal = totalBuy + totalSell;
                 balance += transactionTotal;
                 balanceElement.textContent = balance.toFixed(2);
         
                 buyTotalElement.textContent = '0';
                 sellTotalElement.textContent = '0';
                 transactionTotalElement.textContent = '0';
+                totalBuy=0;
+                totalSell=0;
                 transationTotal = 0;
             
             };
 
-            //need to fix error where a number in both buy and sell for same stock, the final transaction number is wrong. 
-            //could make a warning to not use both columns?
 
         
 
