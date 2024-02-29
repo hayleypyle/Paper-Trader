@@ -17,6 +17,11 @@ body{
 
 }
 
+.body-container{
+    width:100%;
+    text-align: center;
+}
+
 
 .header{
     font-size:3rem;
@@ -34,6 +39,7 @@ body{
 .main-container{
     display:flex;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
 
 }
@@ -50,15 +56,7 @@ th, td{
     font-size:0.8em;
 
 }
-/* .directions{
-    width:60%;
-    background-color:white;
-    padding:10px;
-    border-radius:5px;
-    margin-bottom:10px;
-    color:#545986;
 
-} */
 #tickerform{
     color:#383632;
     margin:3%;
@@ -122,6 +120,7 @@ h2{
 
 h3{
     font-weight:400;
+    font-size: 1.3rem;
 }
 
 h4{
@@ -131,11 +130,11 @@ h4{
 
 .balance-container{
     text-align: center;
-    display:flex;
-    justify-content: center;
+    display:block;
     align-items: center;
-    flex-direction: row;
-    width:75%;
+    justify-content: right;
+    width:60%;
+    padding:0%;
 
 }
 
@@ -145,12 +144,12 @@ h4{
     border-color:#898989;
     border-width:2px;
     border-style:solid;
-    margin-right:5%;
     padding: 2%;
     border-radius:25px;
-    width:250px;
+    width:40%;
     height:10%;
     font-size:0.9rem;
+    margin-top:2%;
     
 }
 
@@ -174,5 +173,14 @@ h4{
     background-color:#898989;
     color:#FEFCF3;
     border-color:#898989;
+
+}
+
+.history-container{
+    display:flex;
+    margin-top:3%;
+    flex-direction: column;
+    align-items: center;
+    color:#383632;
 
 }
