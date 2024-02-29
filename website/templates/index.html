@@ -109,6 +109,7 @@
             <tr>
                 <th>Date</th>
                 <th>Stock</th>
+                <th>Stock Price</th>
                 <th>Buy Quantity</th>
                 <th>Sell Quantity</th>
                 <th>Balance</th>
@@ -162,6 +163,29 @@
         }
 
         initializePortfolioFromLocalStorage();
+
+        function initializeTransactionHistoryFromLocalStorage() {
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            const tableBody = document.querySelector('#transaction-history tbody');
+            tableBody.innerHTML = ''; // Clear existing table rows
+            transactions.forEach(transaction => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${transaction.stockName}</td>
+                    <td>${transaction.sharePrice}</td>
+                    <td>${transaction.buyQuantity}</td>
+                    <td>${transaction.sellQuantity}</td>
+                    <td>${transaction.balance}</td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        }
+        
+        window.addEventListener('load', function() {
+            initializeTransactionHistoryFromLocalStorage();
+            
+        });
 
 
         
@@ -238,57 +262,58 @@
             if (newBalance < 0) {
                 alert('Transaction total exceeds balance. Transaction cannot be completed.');
                 return;
-            } //need to fix this! It doesnt allow you to sell more than your balance, even if you have the shares.
-
+            } 
             let transactionCompleted = true;
 
             sharesOwnedElements.forEach(sharesOwnedElement =>{
                 const stockName = sharesOwnedElement.id.split('-')[2];
+                const sharePriceElement = document.querySelector(`#shares-price-${stockName}`);
+                const sharePrice = parseFloat(sharePriceElement.textContent)|| 0;
+                const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
+
                 const buyQuantityInput = document.querySelector(`.buy-quantity[data-stock="${stockName}"]`);
                 const sellQuantityInput = document.querySelector(`.sell-quantity[data-stock="${stockName}"]`);        
                 const buyQuantity = parseInt(document.querySelector(`.buy-quantity[data-stock="${stockName}"]`).value)||0;
                 const sellQuantity = parseInt(document.querySelector(`.sell-quantity[data-stock="${stockName}"]`).value)||0;
-                const sharesOwned = parseInt(sharesOwnedElement.textContent)|| 0;
+                
                 const totalShares = sharesOwned + buyQuantity - sellQuantity;
 
-                localStorage.setItem('buy-quantity', buyQuantity)
-                localStorage.setItem('sell-quantity', sellQuantity)
-                localStorage.setItem('stock-name', stockName)
+                localStorage.setItem(`buyQuantity-${stockName}`, buyQuantity);
+                localStorage.setItem(`sellQuantity-${stockName}`, sellQuantity);
+                localStorage.setItem('stockName', stockName);
+                localStorage.setItem(`sharePrice-${stockName}`, sharePrice);
+
 
 
                 
 
-            if (sharesOwned < sellQuantity){
-                alert('Not enough shares for transaction.');
-                transactionCompleted = false;
-                return;
-            }
+                if (sharesOwned < sellQuantity){
+                    alert('Not enough shares for transaction.');
+                    transactionCompleted = false;
+                    return;
+                }
                 
-            sharesOwnedElement.textContent = totalShares;
-            buyQuantityInput.value = '';
-            sellQuantityInput.value = '';
+                sharesOwnedElement.textContent = totalShares;
+                buyQuantityInput.value = '';
+                sellQuantityInput.value = '';
                 
         });
 
             if (transactionCompleted){
 
-                //dont touch!!!!//
+            
                 const currentDate = new Date().toLocaleString(); 
-                const buyQuantity = localStorage.getItem('buyQuantity');
-                const sellQuantity = localStorage.getItem('sellQuantity');
-                const stockName = localStorage.getItem('stockName');
-
-                //no touchy!!!//
-                completeTransaction(buyQuantity, sellQuantity, stockName);
-                savePortfolioToLocalStorage(currentDate, balance, buyQuantity, sellQuantity, stockName);
-                addTransactionToHistory(currentDate, balance, buyQuantity, sellQuantity, stockName);
+            
+                completeTransaction();
+                savePortfolioToLocalStorage(currentDate);
+                addTransactionToHistory(currentDate);
                 
 
             }
                 
         });
 
-        function savePortfolioToLocalStorage(currentDate, buyQuantity) {
+        function savePortfolioToLocalStorage(currentDate) {
 
             localStorage.setItem('balance', balance.toFixed(2));
 
@@ -299,95 +324,86 @@
             
 
             });
-            buyQuantityInputs.forEach(input => {
-                const stockName = input.dataset.stock;
-                const buyQuantity = parseInt(input.value)|| 0;
-                localStorage.setItem('stockName', `buyQuantity-${stockName}`);
-                localStorage.setItem('buyQuantity', buyQuantity);
-                //localStorage.setItem('stockName', stockName);
-
-
-            });
-                
-            sellQuantityInputs.forEach(input => {
-                const stockName = input.dataset.stock;
-                const sellQuantity = parseInt(input.value)|| 0;
-                localStorage.setItem('stockName', `sellQuantity-${stockName}`);
-                localStorage.setItem('sellQuantity', sellQuantity);
-
-
-                //localStorage.setItem('stockName', stockName);
-            
-
-            });
 
             localStorage.setItem('date', currentDate);
         };
 
+        function saveTransactionToLocalStorage(transaction) {
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        transactions.push(transaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+
         
-    function addTransactionToHistory(currentDate) {
-        const stockName = localStorage.getItem('stockName');
-        const buyQuantity = localStorage.getItem('buyQuantity');
-        const sellQuantity = localStorage.getItem('sellQuantity');
-        const balance = localStorage.getItem('balance');
-        
-        const tableBody = document.querySelector('#transaction-history tbody');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${currentDate}</td>
-            <td>${localStorage.getItem('stock-name')}</td>
-            <td>${localStorage.getItem('buy-quantity')}</td>
-            <td>${localStorage.getItem('sell-quantity')}</td>
-            <td>${balance}</td>
-            `;
-        tableBody.appendChild(newRow);
-        }
+        function addTransactionToHistory(currentDate, stockName, sharePrice, buyQuantity, sellQuantity, balance) {    
+            const transaction = { date: currentDate, stockName, sharePrice, buyQuantity, sellQuantity, balance };
+            saveTransactionToLocalStorage(transaction);    
+            const tableBody = document.querySelector('#transaction-history tbody');
+            
+            sharesOwnedElements.forEach(sharesOwnedElement => {
+            const stockName = sharesOwnedElement.id.split('-')[2];
+            const buyQuantity = localStorage.getItem(`buyQuantity-${stockName}`);
+            const sellQuantity = localStorage.getItem(`sellQuantity-${stockName}`);
+            const sharePrice = localStorage.getItem(`sharePrice-${stockName}`);
+            const balance = localStorage.getItem('balance');
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${currentDate}</td>
+                <td>${stockName}</td>
+                <td>${sharePrice}</td>
+                <td>${buyQuantity}</td>
+                <td>${sellQuantity}</td>
+                <td>${balance}</td>
+                `;
+            tableBody.appendChild(newRow);
+            })}
 
 
-    function completeTransaction(buyQuantity, sellQuantity, stockName){
-            const transactionTotal = totalBuy + totalSell;
-            balance += transactionTotal;
-            balanceElement.textContent = balance.toFixed(2);  
+        function completeTransaction(){
+                const transactionTotal = totalBuy + totalSell;
+                balance += transactionTotal;
+                balanceElement.textContent = balance.toFixed(2);  
+                buyTotalElement.textContent = '0';
+                sellTotalElement.textContent = '0';
+                totalBuy=0;
+                totalSell=0;
+                updateTransactionTotal();  
+                    
+                };
+
+        function resetPortfolio(){
+            balance = 10000;
+            totalBuy=0;
+            totalSell = 0;
+            sharesOwned = 0;
+            totalShares = 0;
+
+            balanceElement.textContent = balance.toFixed(2);
             buyTotalElement.textContent = '0';
             sellTotalElement.textContent = '0';
-            totalBuy=0;
-            totalSell=0;
-            updateTransactionTotal();  
-                
-            };
+            transactionTotalElement.textContent = '0';
 
-    function resetPortfolio(){
-        balance = 10000;
-        totalBuy=0;
-        totalSell = 0;
-        sharesOwned = 0;
-        totalShares = 0;
+            localStorage.clear();
 
-        balanceElement.textContent = balance.toFixed(2);
-        buyTotalElement.textContent = '0';
-        sellTotalElement.textContent = '0';
-        transactionTotalElement.textContent = '0';
+            buyQuantityInputs.forEach(input => {
+                input.value = '';
+            });
+            sellQuantityInputs.forEach(input => {
+                input.value = '';
+            });
+            sharesOwnedElements.forEach(element => {
+                element.textContent = '0';
+            });
 
-        localStorage.clear();
-
-        buyQuantityInputs.forEach(input => {
-            input.value = '';
+            const tableBody = document.querySelector('#transaction-history tbody');
+            tableBody.innerHTML = '';
+        }
+        
+        document.getElementById("reset").addEventListener('click', function(){
+            resetPortfolio();
+            savePortfolioToLocalStorage();
         });
-        sellQuantityInputs.forEach(input => {
-            input.value = '';
-        });
-        sharesOwnedElements.forEach(element => {
-            element.textContent = '0';
-        });
-
-        const tableBody = document.querySelector('#transaction-history tbody');
-        tableBody.innerHTML = '';
-    }
-    
-    document.getElementById("reset").addEventListener('click', function(){
-        resetPortfolio();
-        savePortfolioToLocalStorage();
-    });
 
 
         
