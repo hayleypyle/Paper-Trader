@@ -18,9 +18,10 @@ This is an app that can simulate buying and selling stocks for the user.
     - The user can customize the initial balance.
  
 How to Use:
--After download use terminal to cd to the website directory. 
--Use pip to install plotly and yahoo-finance.
--Use python manage.py runserver
+    - Download zip file and use terminal to cd to the website directory. 
+    - Use pip to install plotly and yahoo-finance.
+    - Use python manage.py runserver
+
 
 
 
