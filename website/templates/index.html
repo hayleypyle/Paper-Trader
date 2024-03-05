@@ -102,7 +102,7 @@
 </div>
 
 <div class="history-container">
-    <h3>history</h3>
+    <h3>transaction history</h3>
 
     <table id="transaction-history">
         <thead>
@@ -139,6 +139,7 @@
         let totalBuy=0;
         let totalSell = 0;
         let totalShares = 0;
+        let stockName, sharePrice, buyQuantity, sellQuantity;
     
         if(selectElement){
             selectElement.addEventListener('change', function() {
@@ -164,31 +165,6 @@
 
         initializePortfolioFromLocalStorage();
 
-        function initializeTransactionHistoryFromLocalStorage() {
-            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            const tableBody = document.querySelector('#transaction-history tbody');
-            tableBody.innerHTML = ''; // Clear existing table rows
-            transactions.forEach(transaction => {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${transaction.date}</td>
-                    <td>${transaction.stockName}</td>
-                    <td>${transaction.sharePrice}</td>
-                    <td>${transaction.buyQuantity}</td>
-                    <td>${transaction.sellQuantity}</td>
-                    <td>${transaction.balance}</td>
-                `;
-                tableBody.appendChild(newRow);
-            });
-        }
-        
-        window.addEventListener('load', function() {
-            initializeTransactionHistoryFromLocalStorage();
-            
-        });
-
-
-        
 
         buyQuantityInputs.forEach(input => { 
             if(balance <= 10000){
@@ -256,6 +232,11 @@
         transactionForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
+            //error is here somewhere with stockName, sharePrice, etc. 
+
+            
+
+
             const transactionTotal = parseFloat(transactionTotalElement.textContent);
             let newBalance = parseInt(transactionTotal) + parseInt(balance)
 
@@ -302,11 +283,11 @@
             if (transactionCompleted){
 
             
-                const currentDate = new Date().toLocaleString(); 
-            
+                const currentDate = new Date().toLocaleString();
+                
                 completeTransaction();
                 savePortfolioToLocalStorage(currentDate);
-                addTransactionToHistory(currentDate);
+                addTransactionToHistory(currentDate, stockName, sharePrice, buyQuantity, sellQuantity, balance);
                 
 
             }
@@ -326,6 +307,7 @@
             });
 
             localStorage.setItem('date', currentDate);
+            
         };
 
         function saveTransactionToLocalStorage(transaction) {
@@ -336,8 +318,7 @@
 
         
         function addTransactionToHistory(currentDate, stockName, sharePrice, buyQuantity, sellQuantity, balance) {    
-            const transaction = { date: currentDate, stockName, sharePrice, buyQuantity, sellQuantity, balance };
-            saveTransactionToLocalStorage(transaction);    
+        
             const tableBody = document.querySelector('#transaction-history tbody');
             
             sharesOwnedElements.forEach(sharesOwnedElement => {
@@ -346,6 +327,15 @@
             const sellQuantity = localStorage.getItem(`sellQuantity-${stockName}`);
             const sharePrice = localStorage.getItem(`sharePrice-${stockName}`);
             const balance = localStorage.getItem('balance');
+            const transaction = {
+                currentDate: currentDate, 
+                stockName: stockName, 
+                sharePrice: sharePrice, 
+                buyQuantity: buyQuantity, 
+                sellQuantity: sellQuantity, 
+                balance: balance};
+            saveTransactionToLocalStorage(transaction);    
+
 
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
@@ -357,7 +347,30 @@
                 <td>${balance}</td>
                 `;
             tableBody.appendChild(newRow);
-            })}
+            }
+            )}
+
+            function initializeTransactionHistoryFromLocalStorage() {
+                const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+                const tableBody = document.querySelector('#transaction-history tbody');
+                tableBody.innerHTML = '';
+                transactions.forEach(transaction => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${transaction.currentDate}</td>
+                        <td>${transaction.stockName}</td>
+                        <td>${transaction.sharePrice}</td>
+                        <td>${transaction.buyQuantity}</td>
+                        <td>${transaction.sellQuantity}</td>
+                        <td>${transaction.balance}</td>
+                    `;
+                    tableBody.appendChild(newRow);
+                });
+            }
+            
+        
+            initializeTransactionHistoryFromLocalStorage();
+                
 
 
         function completeTransaction(){
