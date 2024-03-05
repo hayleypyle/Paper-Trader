@@ -230,12 +230,7 @@
         
 
         transactionForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            //error is here somewhere with stockName, sharePrice, etc. 
-
-            
-
+            event.preventDefault();           
 
             const transactionTotal = parseFloat(transactionTotalElement.textContent);
             let newBalance = parseInt(transactionTotal) + parseInt(balance)
@@ -327,6 +322,8 @@
             const sellQuantity = localStorage.getItem(`sellQuantity-${stockName}`);
             const sharePrice = localStorage.getItem(`sharePrice-${stockName}`);
             const balance = localStorage.getItem('balance');
+
+        
             const transaction = {
                 currentDate: currentDate, 
                 stockName: stockName, 
@@ -334,9 +331,8 @@
                 buyQuantity: buyQuantity, 
                 sellQuantity: sellQuantity, 
                 balance: balance};
-            saveTransactionToLocalStorage(transaction);    
-
-
+            saveTransactionToLocalStorage(transaction); 
+            if(parseInt(buyQuantity) > 0 || parseInt(sellQuantity) > 0){   
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${currentDate}</td>
@@ -348,13 +344,17 @@
                 `;
             tableBody.appendChild(newRow);
             }
-            )}
+        }
+        )}
 
             function initializeTransactionHistoryFromLocalStorage() {
                 const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
                 const tableBody = document.querySelector('#transaction-history tbody');
                 tableBody.innerHTML = '';
                 transactions.forEach(transaction => {
+                    const { buyQuantity, sellQuantity } = transaction;
+                    
+                    if(parseInt(buyQuantity) > 0 || parseInt(sellQuantity) > 0){  
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>${transaction.currentDate}</td>
@@ -365,8 +365,11 @@
                         <td>${transaction.balance}</td>
                     `;
                     tableBody.appendChild(newRow);
-                });
-            }
+                    }
+            })}
+            
+            ;
+                
             
         
             initializeTransactionHistoryFromLocalStorage();
