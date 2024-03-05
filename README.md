@@ -17,7 +17,10 @@ This is an app that can simulate buying and selling stocks for the user.
     - The user can purchase or sell stocks for any company, not just Apple, Microsoft, and Google.
     - The user can customize the initial balance.
  
--Requires yahoo Finance and Plotly Express. 
+
+-After download use terminal to cd to the website directory. 
+-Use pip to install plotly and yahoo-finance.
+-Use python manage.py runserver
 
 
 
