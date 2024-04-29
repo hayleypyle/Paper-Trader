@@ -22,6 +22,8 @@ This is an app that can simulate buying and selling stocks for the user.
     - Use pip to install plotly and yahoo-finance.
     - Use python manage.py runserver
 
+https://paper-trader-7i1n.onrender.com/
+
 
 
 
